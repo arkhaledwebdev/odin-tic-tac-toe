@@ -1,3 +1,18 @@
+let turn = true;
+
+const playButton = document.getElementById('play-button');
+
+playButton.addEventListener('click', playRound);
+
+class Cell {
+    constructor(cellNo, mark = '', playerName = '', isMarked = false) {
+        this.cellNo = cellNo;
+        this.mark = mark;
+        this.playerName = playerName;
+        this.isMarked = isMarked;
+    }
+}
+
 const gameBoard = (function () {
 
     let board = [];
@@ -10,14 +25,22 @@ const gameBoard = (function () {
         board[i] = [];
 
         for (let j = 0; j < columns; j++) {
-            board[i].push(createCell(i * columns + j))
+            board[i].push(new Cell(i * columns + j))
         }
 
     }
 
     const markCell = (cellNo, player) => {
 
-        console.log(board.find(c => c.cellNo === cellNo));
+        let chosenCell = board.flat().find(cell => cell.cellNo === cellNo);
+
+        chosenCell.isMarked = true;
+        chosenCell.mark = player.mark;
+        chosenCell.playerName = player.playerName;
+
+        console.log(chosenCell);
+
+        updateBoard(cellNo, chosenCell, board);
 
     }
 
@@ -26,7 +49,7 @@ const gameBoard = (function () {
     return { getBoard, markCell };
 })();
 
-const gameController = (function (p1_name, p2_name) {
+const gameController = (function (p1_name = 'AhmedKh', p2_name = "AI_Bot") {
 
     const players = [
         { playerName: p1_name, mark: 'X' },
@@ -52,46 +75,28 @@ const gameController = (function (p1_name, p2_name) {
 
 function playRound() {
 
-    let board = gameBoard.getBoard();
-
     const currentPlayer = gameController.getCurrentPlayer();
 
-    // emulate p1 move
+    gameBoard.markCell(1, currentPlayer);
 
-    gameBoard.markCell(4, currentPlayer);
-
-    console.log(board);
+    console.log(gameBoard.getBoard());
 
     gameController.switchTurn();
 
-    gameBoard.markCell(2, currentPlayer);
-
-    console.log(board);
-
 }
 
-function createCell(cellNo) {
 
-    let isMarked = false;
+function updateBoard(cellNo, newCell, board){
 
-    let mark = '';
-
-    let player = '';
-
-    const setMark = (mark, player) => {
-        this.isMarked = true;
-        this.mark = mark;
-        this.player = player;
-    };
-
-    const getMark = () => mark;
-
-    const getPlayer = () => player;
-
-    return { cellNo, isMarked, setMark, getMark, getPlayer };
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            if(board[i][j].cellNo === cellNo){
+                board[i][j] = newCell;
+                return;
+            }
+        }
+    }
 }
-
-playRound();
 
 
 
