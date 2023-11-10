@@ -68,7 +68,7 @@ body{
     border-bottom: none;
 }
 
-img {
+.cell > img {
     width: var(--mark-size);
     height: var(--mark-size);
 }

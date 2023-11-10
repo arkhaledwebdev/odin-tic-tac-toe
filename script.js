@@ -2,14 +2,29 @@ let turn = true;
 
 const playButton = document.getElementById('play-button');
 
+const gameScreen = document.querySelector('.game-board');
+
+const cells = document.querySelectorAll('.cell');
+
+cells.forEach(cell=> {
+    cell.addEventListener("click",(e)=>{
+        // const markedCell = e.target;
+        const cellIndex = e.target.dataset.index;
+        playRound(cellIndex);
+        
+    }, {once: true})
+})
+
 playButton.addEventListener('click', playRound);
 
 class Cell {
-    constructor(cellNo, mark = '', playerName = '', isMarked = false) {
+    constructor(cellNo, mark = '', playerName = '', isMarked = false, isDisplayed = false) {
         this.cellNo = cellNo;
         this.mark = mark;
         this.playerName = playerName;
         this.isMarked = isMarked;
+        this.isDisplayed = isDisplayed;
+        
     }
 }
 
@@ -32,16 +47,12 @@ const gameBoard = (function () {
 
     const markCell = (cellNo, player) => {
 
-        let chosenCell = board.flat().find(cell => cell.cellNo === cellNo);
-
+        let chosenCell = board.flat().find(cell => cell.cellNo === parseInt(cellNo));
+        
         chosenCell.isMarked = true;
         chosenCell.mark = player.mark;
-        chosenCell.playerName = player.playerName;
-
-        console.log(chosenCell);
-
-        updateBoard(cellNo, chosenCell, board);
-
+        chosenCell.playerName = player.playerName;        
+        
     }
 
     const getBoard = () => board;
@@ -73,30 +84,56 @@ const gameController = (function (p1_name = 'AhmedKh', p2_name = "AI_Bot") {
 })();
 
 
-function playRound() {
+const displatController = (function(){
 
-    const currentPlayer = gameController.getCurrentPlayer();
+    const displayBoard = function(currentPlayer, newBoard, cells){
 
-    gameBoard.markCell(1, currentPlayer);
+        cells.forEach(cell=>{
+            
+            let cellIndex = cell.dataset.index
 
-    console.log(gameBoard.getBoard());
+            if( newBoard[cellIndex].isMarked 
+                && newBoard[cellIndex].isDisplayed === false ){
+
+                newBoard[cellIndex].isDisplayed = true;
+                let newMarkedCell = document.createElement('img');
+
+                if(currentPlayer.mark === 'X'){
+                    newMarkedCell.src = './images/x-mark.png'
+                }
+                else {
+                    newMarkedCell.src = './images/o-mark.png'
+                }
+
+                cell.appendChild(newMarkedCell);
+                return;
+            }
+        })
+    }
+
+    return {displayBoard}
+
+})();
+
+
+function playRound(cellIndex){
+
+    let currentPlayer = gameController.getCurrentPlayer();
+
+    gameBoard.markCell(cellIndex, currentPlayer);
+    let newBoard = gameBoard.getBoard().flat();
+
+    console.log(newBoard);
+
+    displatController.displayBoard(currentPlayer, newBoard , cells );
 
     gameController.switchTurn();
 
 }
 
 
-function updateBoard(cellNo, newCell, board){
 
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[i].length; j++) {
-            if(board[i][j].cellNo === cellNo){
-                board[i][j] = newCell;
-                return;
-            }
-        }
-    }
-}
+
 
 
 
