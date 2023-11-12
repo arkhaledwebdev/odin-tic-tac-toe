@@ -36,6 +36,9 @@ const gameBoard = (function () {
     let columns = 3;
     let rows = 3;
 
+    
+
+
 
     for (let i = 0; i < rows; i++) {
 
@@ -57,9 +60,19 @@ const gameBoard = (function () {
         
     }
 
+    const getMarkedCells = (newBoard, player) => {
+        let markedCells = [];
+        newBoard.forEach(cell=>{
+            if(cell.isMarked && player.mark === cell.mark){
+                markedCells.push(cell.cellNo);
+            }
+        })
+        return markedCells;
+    }
+
     const getBoard = () => board;
 
-    return { getBoard, markCell };
+    return { getBoard, markCell, getMarkedCells };
 })();
 
 const gameController = (function (p1_name = 'AhmedKh', p2_name = "AI_Bot") {
@@ -123,40 +136,29 @@ function playRound(cellIndex){
     let currentPlayer = gameController.getCurrentPlayer();
 
     gameBoard.markCell(cellIndex, currentPlayer);
+
     let newBoard = gameBoard.getBoard().flat();
 
-    console.log(newBoard);
+    let newMarkedCells = gameBoard.getMarkedCells(newBoard, currentPlayer);
+
+    console.log(newMarkedCells);
 
     displayController.displayBoard(currentPlayer, newBoard , cells );
 
-    checkWin(currentPlayer, newBoard);
+    checkWin(currentPlayer, newMarkedCells);
 
     gameController.switchTurn();
 
 }
 
 
-function checkWin(player, board){
+function checkWin(player, markedCells){
 
-    let playerMarkedCells = [];
-
-    board.forEach(cell=>{
-
-        if(cell.isMarked){
-            playerMarkedCells.push(cell.cellNo);
-        }
-    })
-
-    console.log(playerMarkedCells);
-
-    let winCondition = WIN_COMBOS.some(comb=> {
-        comb.every(number=> playerMarkedCells.includes(number));
-    });
+    let winCondition = WIN_COMBOS.some(comb=> comb.every(number=> markedCells.includes(number)));
 
     if(winCondition){
         console.log(`${player} WINS`);
     }
-
 }
 
 
