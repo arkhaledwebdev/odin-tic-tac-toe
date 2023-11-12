@@ -6,6 +6,8 @@ const gameScreen = document.querySelector('.game-board');
 
 const cells = document.querySelectorAll('.cell');
 
+const WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
 cells.forEach(cell=> {
     cell.addEventListener("click",(e)=>{
         // const markedCell = e.target;
@@ -84,7 +86,7 @@ const gameController = (function (p1_name = 'AhmedKh', p2_name = "AI_Bot") {
 })();
 
 
-const displatController = (function(){
+const displayController = (function(){
 
     const displayBoard = function(currentPlayer, newBoard, cells){
 
@@ -125,9 +127,35 @@ function playRound(cellIndex){
 
     console.log(newBoard);
 
-    displatController.displayBoard(currentPlayer, newBoard , cells );
+    displayController.displayBoard(currentPlayer, newBoard , cells );
+
+    checkWin(currentPlayer, newBoard);
 
     gameController.switchTurn();
+
+}
+
+
+function checkWin(player, board){
+
+    let playerMarkedCells = [];
+
+    board.forEach(cell=>{
+
+        if(cell.isMarked){
+            playerMarkedCells.push(cell.cellNo);
+        }
+    })
+
+    console.log(playerMarkedCells);
+
+    let winCondition = WIN_COMBOS.some(comb=> {
+        comb.every(number=> playerMarkedCells.includes(number));
+    });
+
+    if(winCondition){
+        console.log(`${player} WINS`);
+    }
 
 }
 
