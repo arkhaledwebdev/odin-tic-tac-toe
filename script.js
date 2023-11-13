@@ -65,6 +65,8 @@ const gameBoard = (function () {
     let columns = 3;
     let rows = 3;
 
+    let moves = 0;
+
     function initNewBoard() {
         for (let i = 0; i < rows; i++) {
             board[i] = [];
@@ -80,7 +82,8 @@ const gameBoard = (function () {
         console.log(gameBoard.getBoard())
 
         let chosenCell = board.flat().find(cell => cell.cellNo === parseInt(cellNo));
-        
+
+        moves++;
         chosenCell.isMarked = true;
         chosenCell.mark = player.mark;
         chosenCell.playerName = player.playerName;         
@@ -98,8 +101,11 @@ const gameBoard = (function () {
 
     const getBoard = () => board;
 
+    const getMoves = () => moves;
+
     const resetBoard = ()=> {
         board = [];
+        moves = 0;
         initNewBoard();
         
         cells.forEach(cell=> {
@@ -112,7 +118,7 @@ const gameBoard = (function () {
         console.log(board);
     }
 
-    return { getBoard, markCell, getMarkedCells, resetBoard };
+    return { getBoard,getMoves, markCell, getMarkedCells, resetBoard };
 })();
 
 gameBoard.resetBoard();
@@ -138,6 +144,7 @@ const gameController = (function () {
 
             currentPlayer = players[0];
         }
+
     }
 
     const getCurrentPlayer = () => currentPlayer;
@@ -213,6 +220,12 @@ function checkWin(player, markedCells){
         dialogMessage.textContent = `${player.playerName} WINS`;
         winDialog.showModal();
     }
+
+    if(gameBoard.getMoves() === 9){
+        dialogMessage.textContent = "It is a draw";
+        winDialog.showModal();
+    }
+
 }
 
 
