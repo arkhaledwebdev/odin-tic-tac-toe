@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,29 @@
     <script src="./script.js" defer></script>
     <title>ODIN Tic Tac Toe</title>
 </head>
+
 <body>
-    <div class="header">ODIN Tic Tac Toe</div>
+    <div class="header-container">
+        <div class="header">ODIN Tic Tac Toe</div>
+        <div class="players-container">
+            <div class="player-1-container">
+                <div class="player-1-name">Player 1</div>
+                <div class="player-1-mark">X</div>
+                <img id="player-1-edit" src="./images/pencil.svg" alt="edit-button">
+            </div>
+
+            <div class="player-2-container">
+                <div class="player-2-name">Player 2</div>
+                <div class="player-2-mark">O</div>
+                <img id="player-2-edit" src="./images/pencil.svg" alt="edit-button">
+            </div>
+        </div>
+    </div>
+
+    <div class="buttons-container">
+        <button id="start-button">Start</button>
+        <button id="reset-button">Reset</button>
+    </div>
     <div class="game-board">
         <div class="cell" data-index="0">
         </div>
@@ -27,8 +49,7 @@
         <div class="cell" data-index="7">
         </div>
         <div class="cell" data-index="8">
-        </div> 
+        </div>
     </div>
-    <button id="play-button">Play</button>
 </body>
 </html>

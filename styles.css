@@ -8,7 +8,7 @@
     --primary-color: #e1b399;
     --secondary-color: #f1dcd0;
     --accent-color: #bc6938;
-    --text-color:#23140b;
+    --text-color:#522408;
     --mark-size: calc(var(--cell-size) * 0.8);
 }
 
@@ -23,7 +23,56 @@ body{
     font-weight: 900;
     text-align: center;
     color: var(--text-color);
-    margin-top: 50px;
+    margin-top: 30px;
+}
+
+.players-container,
+.buttons-container,
+.player-1-container,
+.player-2-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.player-1-container > img,
+.player-2-container > img {
+    width: 25px;
+}
+
+.player-1-container > img:hover,
+.player-2-container > img:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.player-1-container {
+    margin-right: 50px;
+}
+
+.player-1-name,.player-2-name,
+.player-1-mark, .player-2-mark {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text-color);
+    /* border: 2px solid var(--accent-color); */
+    border-radius: 10px 20px;
+    padding: 10px;
+}
+
+#start-button, #reset-button {
+    font-size: 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: 900;
+    border-radius: 8px;
+    padding: 10px 20px;
+}
+
+#start-button {
+    margin-right: 25px;
 }
 
 .game-board {
@@ -32,10 +81,11 @@ body{
     display: grid;
     grid-template-columns: repeat(3,auto);
     grid-template-rows: repeat(3,auto);
-    align-content: center;
+    align-content: start;
     justify-content: center;
     align-items: center;
     justify-items: center;
+    margin-top: 50px;
 }
 
 .cell{

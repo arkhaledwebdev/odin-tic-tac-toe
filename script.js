@@ -1,10 +1,32 @@
 let turn = true;
 
-const playButton = document.getElementById('play-button');
+const startButton = document.getElementById('start-button');
+const resetButton = document.getElementById('reset-button');
 
 const gameScreen = document.querySelector('.game-board');
 
 const cells = document.querySelectorAll('.cell');
+
+const player1Edit = document.getElementById('player-1-edit');
+const player1Name = document.querySelector('.player-1-name');
+player1Edit.addEventListener('click', ()=>{
+    let p1Name = prompt('Player 1 name: ');
+    player1Name.textContent = p1Name;
+});
+
+const player2Edit = document.getElementById('player-2-edit');
+const player2Name = document.querySelector('.player-2-name');
+player2Edit.addEventListener('click', ()=>{
+    let p2Name = prompt('Player 2 name: ');
+    player2Name.textContent = p2Name;
+});
+
+resetButton.addEventListener('click',()=>{
+    gameBoard.resetBoard();
+    // cells.forEach(cell=>{
+    //     cell.removeChild('img');
+    // })
+})
 
 const WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
@@ -12,12 +34,14 @@ cells.forEach(cell=> {
     cell.addEventListener("click",(e)=>{
         // const markedCell = e.target;
         const cellIndex = e.target.dataset.index;
-        playRound(cellIndex);
-        
-    }, {once: true})
+        console.log(e.target);
+        if(!(e.target.classList.contains('marked'))){
+            e.target.classList.add('marked');
+            console.log('marked')
+            playRound(cellIndex);
+        }
+    })
 })
-
-playButton.addEventListener('click', playRound);
 
 class Cell {
     constructor(cellNo, mark = '', playerName = '', isMarked = false, isDisplayed = false) {
@@ -25,8 +49,7 @@ class Cell {
         this.mark = mark;
         this.playerName = playerName;
         this.isMarked = isMarked;
-        this.isDisplayed = isDisplayed;
-        
+        this.isDisplayed = isDisplayed;   
     }
 }
 
@@ -36,18 +59,12 @@ const gameBoard = (function () {
     let columns = 3;
     let rows = 3;
 
-    
-
-
-
     for (let i = 0; i < rows; i++) {
-
         board[i] = [];
 
         for (let j = 0; j < columns; j++) {
             board[i].push(new Cell(i * columns + j))
         }
-
     }
 
     const markCell = (cellNo, player) => {
@@ -56,8 +73,7 @@ const gameBoard = (function () {
         
         chosenCell.isMarked = true;
         chosenCell.mark = player.mark;
-        chosenCell.playerName = player.playerName;        
-        
+        chosenCell.playerName = player.playerName;         
     }
 
     const getMarkedCells = (newBoard, player) => {
@@ -72,14 +88,18 @@ const gameBoard = (function () {
 
     const getBoard = () => board;
 
-    return { getBoard, markCell, getMarkedCells };
+    const resetBoard = ()=> {
+        board = [];
+    }
+
+    return { getBoard, markCell, getMarkedCells, resetBoard };
 })();
 
-const gameController = (function (p1_name = 'AhmedKh', p2_name = "AI_Bot") {
+const gameController = (function () {
 
     const players = [
-        { playerName: p1_name, mark: 'X' },
-        { playerName: p2_name, mark: 'O' }];
+        { playerName: '', mark: 'X' },
+        { playerName: '', mark: 'O' }];
 
     let currentPlayer = players[0];
 
@@ -94,7 +114,12 @@ const gameController = (function (p1_name = 'AhmedKh', p2_name = "AI_Bot") {
 
     const getCurrentPlayer = () => currentPlayer;
 
-    return { getCurrentPlayer, switchTurn };
+    const setPlayersName = ()=>{
+        players[0].playerName = player1Name.textContent;
+        players[1].playerName = player2Name.textContent;
+    }
+
+    return { getCurrentPlayer, setPlayersName, switchTurn };
 
 })();
 
@@ -133,6 +158,8 @@ const displayController = (function(){
 
 function playRound(cellIndex){
 
+    gameController.setPlayersName();
+
     let currentPlayer = gameController.getCurrentPlayer();
 
     gameBoard.markCell(cellIndex, currentPlayer);
@@ -157,8 +184,13 @@ function checkWin(player, markedCells){
     let winCondition = WIN_COMBOS.some(comb=> comb.every(number=> markedCells.includes(number)));
 
     if(winCondition){
-        console.log(`${player} WINS`);
+        console.log(`${player.playerName} WINS`);
+        gameOver();
     }
+}
+
+function gameOver(){
+    //
 }
 
 
