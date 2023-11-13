@@ -1,11 +1,13 @@
-let turn = true;
-
-const startButton = document.getElementById('start-button');
+const winDialog = document.getElementById('dialog_win');
+const dialogMessage = document.querySelector('.dialog-message');
 const resetButton = document.getElementById('reset-button');
 
 const gameScreen = document.querySelector('.game-board');
 
 const cells = document.querySelectorAll('.cell');
+
+const player1Container = document.querySelector('.player-1-container');
+const player2Container = document.querySelector('.player-2-container');
 
 const player1Edit = document.getElementById('player-1-edit');
 const player1Name = document.querySelector('.player-1-name');
@@ -23,9 +25,13 @@ player2Edit.addEventListener('click', ()=>{
 
 resetButton.addEventListener('click',()=>{
     gameBoard.resetBoard();
-    // cells.forEach(cell=>{
-    //     cell.removeChild('img');
-    // })
+   
+    let currentPlayer = gameController.getCurrentPlayer();
+    if(currentPlayer.mark === 'O'){
+        gameController.switchTurn();
+    }
+
+    winDialog.close(); 
 })
 
 const WIN_COMBOS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
@@ -59,15 +65,19 @@ const gameBoard = (function () {
     let columns = 3;
     let rows = 3;
 
-    for (let i = 0; i < rows; i++) {
-        board[i] = [];
-
-        for (let j = 0; j < columns; j++) {
-            board[i].push(new Cell(i * columns + j))
+    function initNewBoard() {
+        for (let i = 0; i < rows; i++) {
+            board[i] = [];
+    
+            for (let j = 0; j < columns; j++) {
+                board[i].push(new Cell(i * columns + j))
+            }
         }
     }
 
     const markCell = (cellNo, player) => {
+
+        console.log(gameBoard.getBoard())
 
         let chosenCell = board.flat().find(cell => cell.cellNo === parseInt(cellNo));
         
@@ -90,10 +100,22 @@ const gameBoard = (function () {
 
     const resetBoard = ()=> {
         board = [];
+        initNewBoard();
+        
+        cells.forEach(cell=> {
+            if(cell.classList.contains('marked')){
+                cell.classList.remove('marked');
+                let img = cell.querySelector('img');
+                cell.removeChild(img);
+            }
+        })
+        console.log(board);
     }
 
     return { getBoard, markCell, getMarkedCells, resetBoard };
 })();
+
+gameBoard.resetBoard();
 
 const gameController = (function () {
 
@@ -105,9 +127,15 @@ const gameController = (function () {
 
     const switchTurn = () => {
         if (currentPlayer === players[0]) {
+            player2Container.classList.add('current-turn');
+            player1Container.classList.remove('current-turn');
+
             currentPlayer = players[1];
         }
         else {
+            player1Container.classList.add('current-turn');
+            player2Container.classList.remove('current-turn');
+
             currentPlayer = players[0];
         }
     }
@@ -122,7 +150,6 @@ const gameController = (function () {
     return { getCurrentPlayer, setPlayersName, switchTurn };
 
 })();
-
 
 const displayController = (function(){
 
@@ -155,7 +182,6 @@ const displayController = (function(){
 
 })();
 
-
 function playRound(cellIndex){
 
     gameController.setPlayersName();
@@ -178,19 +204,15 @@ function playRound(cellIndex){
 
 }
 
-
 function checkWin(player, markedCells){
 
     let winCondition = WIN_COMBOS.some(comb=> comb.every(number=> markedCells.includes(number)));
 
     if(winCondition){
         console.log(`${player.playerName} WINS`);
-        gameOver();
+        dialogMessage.textContent = `${player.playerName} WINS`;
+        winDialog.showModal();
     }
-}
-
-function gameOver(){
-    //
 }
 
 

@@ -27,7 +27,6 @@ body{
 }
 
 .players-container,
-.buttons-container,
 .player-1-container,
 .player-2-container {
     display: flex;
@@ -62,17 +61,41 @@ body{
     padding: 10px;
 }
 
-#start-button, #reset-button {
+.current-turn {
+    border: 4px solid var(--accent-color);
+    border-radius: 8px;
+}
+
+#dialog_win{
+    background-color: var(--primary-color);
+    border-radius: 12px;
+}
+
+.dialog-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    
+}
+
+.dialog-message {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-color);
+    padding: 20px;
+
+}
+
+#reset-button {
     font-size: 1.5rem;
     background-color: var(--accent-color);
     color: white;
     font-weight: 900;
     border-radius: 8px;
     padding: 10px 20px;
-}
-
-#start-button {
-    margin-right: 25px;
 }
 
 .game-board {
